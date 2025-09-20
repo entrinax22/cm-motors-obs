@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('booking_number')->unique();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            $table->dateTime('booking_date');
             $table->dateTime('scheduled_datetime');
             $table->enum('status', ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'])->default('pending');
             $table->text('notes')->nullable();

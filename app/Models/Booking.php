@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    protected $primaryKey = 'booking_id';
     protected $fillable = [
         'booking_number',
         'user_id',
@@ -28,6 +29,6 @@ class Booking extends Model
 
     public function service()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class, 'service_id', 'service_id');
     }
 }

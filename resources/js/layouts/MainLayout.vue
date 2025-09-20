@@ -54,7 +54,14 @@
                                     <div
                                         v-show="accountOpen"
                                         class="animate-fadeUp absolute right-0 z-50 mt-2 w-48 rounded-md border border-yellow-600/30 bg-gray-900/95 shadow-lg backdrop-blur-md"
-                                    >
+                                    >   
+                                        <Link
+                                            v-if="$page.props.auth.user?.is_admin === true"
+                                            href="/admin/dashboard"
+                                            class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                        >
+                                            Dashboard
+                                        </Link>
                                         <Link
                                             href="/my-bookings"
                                             class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"

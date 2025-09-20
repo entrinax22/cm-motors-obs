@@ -23,15 +23,18 @@
                     leave-from-class="opacity-100 translate-x-0"
                     leave-to-class="opacity-0 -translate-x-3"
                 >
-                    <div v-for="item in navItems" :key="item.href">
-                        <Link
-                            :href="item.href"
-                            :class="isActive(item.href) ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'"
-                            class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200"
-                        >
-                            <component :is="item.icon" class="h-5 w-5 transition-transform group-hover:scale-110" />
-                            <span>{{ item.label }}</span>
-                        </Link>
+                    <div v-for="group in navItems" :key="group.group">
+                        <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ group.group }}</h3>
+                        <div v-for="item in group.items" :key="item.href">
+                            <Link
+                                :href="item.href"
+                                :class="isActive(item.href) ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'"
+                                class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200"
+                            >
+                                <component :is="item.icon" class="h-5 w-5 transition-transform group-hover:scale-110" />
+                                <span>{{ item.label }}</span>
+                            </Link>
+                        </div>
                     </div>
                 </transition-group>
             </nav>
@@ -159,12 +162,22 @@ const page = usePage();
 const sidebarOpen = ref(false);
 
 const navItems = [
-    { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/admin/bookings', label: 'Bookings', icon: CalendarCheck },
-    { href: '/admin/services', label: 'Services', icon: Wrench },
-    { href: '/admin/customers', label: 'Customers', icon: Users },
-    { href: '/admin/reports', label: 'Reports', icon: BarChart2 },
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
+    {
+        group: 'Tables',
+        items: [
+            { href: '/admin/bookings', label: 'Bookings', icon: CalendarCheck },
+            { href: '/admin/users', label: 'Users', icon: Users },
+            { href: '/admin/services', label: 'Services', icon: Wrench },
+        ],
+    },
+    {
+        group: 'Other',
+        items: [
+            { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+            { href: '/admin/reports', label: 'Reports', icon: BarChart2 },
+            { href: '/admin/settings', label: 'Settings', icon: Settings },
+        ],
+    },
 ];
 
 const isActive = (path) => page.url.startsWith(path);
