@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Booking;
+use App\Models\Service;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookingController extends Controller
 {
@@ -197,6 +201,44 @@ class BookingController extends Controller
             return response()->json([
                 'result' => false,
                 'message' => "Error in deleting the booking. " . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function bookNow(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'service_id' => 'required|exists:services,service_id',
+                'scheduled_datetime' => 'required|date',
+                'notes' => 'nullable|string',
+            ]);
+
+            $service = Service::where('service_id', $validated['service_id'])->firstOrFail();
+            do {
+                $bookingNumber = mt_rand(10000000, 99999999);
+            } while (Booking::where('booking_number', $bookingNumber)->exists());
+
+            $booking = Booking::create([
+                'booking_number' => $bookingNumber,
+                'user_id' => Auth::id(),
+                'service_id' => $service->service_id,
+                'scheduled_datetime' => $validated['scheduled_datetime'],
+                'status' => 'pending',
+                'notes' => $validated['notes'] ?? null,
+                'total_amount' => $service->price, 
+            ]);
+
+            return response()->json([
+                'result' => true,
+                'message' => 'Booking created successfully!',
+                'booking' => $booking
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'result' => false,
+                'message' => "Error in storing the booking. " . $e->getMessage()
             ], 500);
         }
     }

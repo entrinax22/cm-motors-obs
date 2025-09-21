@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceController;
 
 Route::middleware(['auth'])->group(function () {
@@ -19,13 +20,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contact-us', function () {
         return Inertia::render('Contact');
     })->name('contact');
+
+    Route::post('/user/bookings/bookNow', [BookingController::class, 'bookNow'])->name('user.bookings.bookNow');
+    Route::get('/user/services/selectList', [ServiceController::class, 'selectList'])->name('user.services.selectList');
 });
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/dashboard', function () {
         return Inertia::render('admin/Dashboard');
     })->name('dashboard');
-    
+
+    Route::get('/admin/dashboard/data', [DashboardController::class, 'index'])->name('admin.dashboard.data');
+    Route::get('/admin/dashboard/generateReport', [DashboardController::class, 'generateReport'])->name('admin.dashboard.generateReport');
+
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/bookings', [BookingController::class, 'index'])->name('admin.bookings.index');
     Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services.index');

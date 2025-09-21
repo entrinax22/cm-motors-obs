@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -143,8 +144,8 @@ class ServiceController extends Controller
             $service = Service::where('service_id', $validated['service_id'])->firstOrFail();
 
             if ($request->hasFile('image')) {
-                if ($service->image && \Storage::disk('public')->exists($service->image)) {
-                    \Storage::disk('public')->delete($service->image);
+                if ($service->image && Storage::disk('public')->exists($service->image)) {
+                    Storage::disk('public')->delete($service->image);
                 }
 
                 $validated['image'] = $request->file('image')->store('services', 'public');
@@ -208,7 +209,9 @@ class ServiceController extends Controller
     public function selectList()
     {
         try {
-            $users = Service::select('service_id', 'service_name')->get();
+            $users = Service::select('service_id', 'service_name', 'price')
+                ->where('is_active', true)
+                ->get();
 
             return response()->json([
                 'result' => true,

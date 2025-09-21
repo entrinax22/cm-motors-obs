@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('scheduled_datetime');
             $table->enum('status', ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'])->default('pending');
             $table->text('notes')->nullable();
-            $table->decimal('total_amount', 10, 2);
+            $table->decimal('total_amount', 10, 2)->default(0);
             $table->timestamps();
         });
     }
