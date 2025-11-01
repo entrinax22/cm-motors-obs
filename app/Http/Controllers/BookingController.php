@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Inertia\Inertia;
 use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\SemaphoreService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BookingController extends Controller
 {
+    protected $semaphore;
+
+    public function __construct(SemaphoreService $semaphore){
+        $this->semaphore = $semaphore;
+    }
+    
     public function index()
     {
         return Inertia::render('admin/tables/bookingsTable');
@@ -101,12 +111,40 @@ class BookingController extends Controller
 
             $booking = Booking::create($validated);
 
+            $booking->load(['user', 'service']);
+            $response = null;
+            try {
+                $user = $booking->user; 
+                $phoneNumber = $user->phone ?? '09517995409'; 
+
+                if ($phoneNumber) {
+                    $schedule = new \DateTime($booking->scheduled_datetime);
+                    $date = $schedule->format('M d, Y');
+                    $time = $schedule->format('g:i A');
+
+                    $message = "Hi {$user->name}, your booking #{$booking->booking_number} for {$booking->service->service_name} on {$date} at {$time} has been received. Status: {$booking->status}." . '\n - JMCMotorparts';
+                    
+                    $response = $this->semaphore->sendSMS($phoneNumber, $message);
+                } else {
+                    Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
+                }
+
+            } catch (Exception $smsException) {
+                Log::error("Failed to send SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
+            }
+
             return response()->json([
                 'result' => true,
                 'message' => 'Booking created successfully.',
-                'data' => $booking->load(['user', 'service']), 
+                'response' => $response
             ], 201);
 
+        } catch (ValidationException $ve) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Validation failed.',
+                'errors' => $ve->errors(),
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'result' => false,
@@ -114,6 +152,7 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
 
     public function edit($booking_id)
     {
@@ -146,7 +185,7 @@ class BookingController extends Controller
         try {
             $validated = $request->validate([
                 'booking_id' => 'required|integer',
-                'booking_number' => 'required|string|unique:bookings,booking_number,' . $request->booking_id . ',booking_id',
+                'booking_number' => 'required|string|unique:bookings,booking_number,' . $request->booking_id . ',booking_id', 
                 'user_id' => 'required|exists:users,id',
                 'service_id' => 'required|exists:services,service_id',
                 'scheduled_datetime' => 'required|date',
@@ -157,12 +196,42 @@ class BookingController extends Controller
 
             $booking = Booking::where('booking_id', $validated['booking_id'])->firstOrFail();
 
+            
+            $oldStatus = $booking->status;
+            $newStatus = $validated['status'];
+            $statusHasChanged = ($oldStatus !== $newStatus);
+
             $booking->update($validated);
 
+            $booking->load(['user', 'service']);
+            $response = null;
+           
+            if ($statusHasChanged) {
+                try {
+                    $user = $booking->user;
+                    
+                    $phoneNumber = $user->phone ?? '09517995409';
+
+                    if ($phoneNumber) {
+                        $schedule = new \DateTime($booking->scheduled_datetime);
+                        $date = $schedule->format('M d, Y');
+                        $time = $schedule->format('g:i A');
+
+                        $message = "Hi {$user->name}, your booking #{$booking->booking_number} has been updated. The new status is: {$booking->status}." . '- JMCMotorparts';
+                        
+                        $response = $this->semaphore->sendSMS($phoneNumber, $message);
+                    } else {
+                        Log::warning("No phone number for user ID: {$user->id} (Booking #{$booking->booking_number}) on update.");
+                    }
+
+                } catch (Exception $smsException) {
+                    Log::error("Failed to send update SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
+                }
+            }
             return response()->json([
                 'result' => true,
                 'message' => 'Booking updated successfully.',
-                'data' => $booking->load(['user', 'service']),
+                'response' => $response
             ], 200);
 
         } catch (ModelNotFoundException $e) {
@@ -171,7 +240,14 @@ class BookingController extends Controller
                 'message' => "Booking not found."
             ], 404);
 
-        } catch (\Exception $e) {
+        } catch (ValidationException $ve) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Validation failed.',
+                'errors' => $ve->errors(),
+            ], 422);
+
+        } catch (Exception $e) {
             return response()->json([
                 'result' => false,
                 'message' => "Error in updating the booking. " . $e->getMessage()
@@ -197,7 +273,7 @@ class BookingController extends Controller
                 'message' => 'Booking not found.'
             ], 404);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'result' => false,
                 'message' => "Error in deleting the booking. " . $e->getMessage()
@@ -229,13 +305,34 @@ class BookingController extends Controller
                 'total_amount' => $service->price, 
             ]);
 
+            $booking->load(['user', 'service']);
+            $response = null;
+            try {
+                $user = $booking->user; 
+                $phoneNumber = $user->phone ?? '09517995409'; 
+
+                if ($phoneNumber) {
+                    $schedule = new \DateTime($booking->scheduled_datetime);
+                    $date = $schedule->format('M d, Y');
+                    $time = $schedule->format('g:i A');
+
+                    $message = "Hi {$user->name}, your booking #{$booking->booking_number} for {$booking->service->service_name} on {$date} at {$time} has been received. Status: {$booking->status}." . '\n - JMCMotorparts';
+                    
+                    $response = $this->semaphore->sendSMS($phoneNumber, $message);
+                } else {
+                    Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
+                }
+
+            } catch (Exception $smsException) {
+                Log::error("Failed to send SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
+            }
             return response()->json([
                 'result' => true,
                 'message' => 'Booking created successfully!',
-                'booking' => $booking
+                'response' => $response
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'result' => false,
                 'message' => "Error in storing the booking. " . $e->getMessage()

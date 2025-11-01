@@ -25,12 +25,16 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'auth' => function () {
+                $user = auth()->user();
+
                 return [
-                    'user' => auth()->user() ? [
-                        'id' => auth()->user()->id,
-                        'name' => auth()->user()->name,
-                        'email' => auth()->user()->email,
-                        'profile_photo_url' => auth()->user()->profile_photo_url,
+                    'user' => $user ? [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'profile_photo_url' => $user->profile_photo_url
+                            ? asset('storage/' . $user->profile_photo_url)
+                            : asset('images/default-profile.png'),
                     ] : null,
                 ];
             },

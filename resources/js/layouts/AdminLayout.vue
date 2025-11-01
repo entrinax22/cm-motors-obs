@@ -24,7 +24,7 @@
                     leave-to-class="opacity-0 -translate-x-3"
                 >
                     <div v-for="group in navItems" :key="group.group">
-                        <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-400">{{ group.group }}</h3>
+                        <h3 class="text-xs font-semibold tracking-wide text-gray-400 uppercase">{{ group.group }}</h3>
                         <div v-for="item in group.items" :key="item.href">
                             <Link
                                 :href="item.href"
@@ -100,17 +100,6 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <!-- Notifications -->
-                        <button
-                            type="button"
-                            class="relative rounded-lg bg-white p-2 text-gray-500 transition-transform duration-300 hover:scale-110 hover:bg-gray-50 hover:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-                        >
-                            <Bell class="h-5 w-5" />
-                            <span class="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500">
-                                <span class="text-xs font-medium text-white">3</span>
-                            </span>
-                        </button>
-
                         <!-- View site link -->
                         <Link
                             href="/"
@@ -148,7 +137,7 @@
 
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
-import { BarChart2, Bell, CalendarCheck, LayoutDashboard, LogOut, Settings, Users, Wrench } from 'lucide-vue-next';
+import { CalendarCheck, LayoutDashboard, LogOut, Settings, Users, Wrench } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -174,13 +163,17 @@ const navItems = [
         group: 'Other',
         items: [
             { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-            { href: '/admin/reports', label: 'Reports', icon: BarChart2 },
             { href: '/admin/settings', label: 'Settings', icon: Settings },
         ],
     },
 ];
 
-const isActive = (path) => page.url.startsWith(path);
+const isActive = (path) => {
+    if (path === '/') {
+        return page.url === '/';
+    }
+    return page.url.startsWith(path);
+};
 </script>
 
 <style>

@@ -54,7 +54,7 @@
                                     <div
                                         v-show="accountOpen"
                                         class="animate-fadeUp absolute right-0 z-50 mt-2 w-48 rounded-md border border-yellow-600/30 bg-gray-900/95 shadow-lg backdrop-blur-md"
-                                    >   
+                                    >
                                         <Link
                                             v-if="$page.props.auth.user?.is_admin === 1"
                                             href="/admin/dashboard"
@@ -63,7 +63,13 @@
                                             Dashboard
                                         </Link>
                                         <Link
-                                            href="/my-bookings"
+                                            href="/user/myprofile"
+                                            class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <Link
+                                            href="/mybookings"
                                             class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
                                         >
                                             My Bookings
@@ -79,7 +85,10 @@
                             </div>
 
                             <!-- Book Now Button -->
-                            <button @click="showBookingModal = true" class="rounded-lg border border-yellow-600 bg-yellow-500 px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-yellow-400 hover:scale-105 transition-all duration-200">
+                            <button
+                                @click="showBookingModal = true"
+                                class="rounded-lg border border-yellow-600 bg-yellow-500 px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-200 hover:scale-105 hover:bg-yellow-400"
+                            >
                                 Book Now
                             </button>
                         </div>
@@ -111,7 +120,12 @@
                                 <Link href="/" :class="mobileLinkClass('/')">Home</Link>
                                 <Link href="/services" :class="mobileLinkClass('/services')">Services</Link>
                                 <Link href="/contact-us" :class="mobileLinkClass('/contact-us')">Contact</Link>
-                                <button @click="showBookingModal = true" class="py-3 pr-3 pl-4 text-sm font-semibold text-gray-800 bg-yellow-500 hover:bg-yellow-400 rounded">Book Now</button>
+                                <button
+                                    @click="showBookingModal = true"
+                                    class="rounded bg-yellow-500 py-3 pr-3 pl-4 text-sm font-semibold text-gray-800 hover:bg-yellow-400"
+                                >
+                                    Book Now
+                                </button>
                             </div>
                         </div>
                     </transition>
@@ -166,14 +180,14 @@
                 </div>
             </div>
         </footer>
-        
+
         <!-- Booking Modal -->
-        <div v-if="showBookingModal" class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-            <div class="bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg p-6 text-gray-100 border border-yellow-600/30">
+        <div v-if="showBookingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div class="w-full max-w-lg rounded-xl border border-yellow-600/30 bg-gray-900 p-6 text-gray-100 shadow-2xl">
                 <!-- Modal Header -->
-                <div class="flex justify-between items-center mb-4 border-b border-yellow-600/40 pb-2">
+                <div class="mb-4 flex items-center justify-between border-b border-yellow-600/40 pb-2">
                     <h2 class="text-xl font-bold text-yellow-400">Book a Service</h2>
-                    <button @click="showBookingModal = false" class="text-gray-400 hover:text-yellow-400 transition">
+                    <button @click="showBookingModal = false" class="text-gray-400 transition hover:text-yellow-400">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -184,7 +198,7 @@
                 <form class="grid grid-cols-1 gap-4" @submit.prevent="submitBooking">
                     <!-- Service Select -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-200 mb-1">Service</label>
+                        <label class="mb-1 block text-sm font-medium text-gray-200">Service</label>
                         <multiselect
                             v-model="selectedService"
                             :options="services"
@@ -194,52 +208,58 @@
                             :searchable="true"
                             :close-on-select="true"
                             :allow-empty="true"
-                            class="rounded-md border border-yellow-500/50 bg-gray-800 text-gray-100 shadow-sm w-full"
+                            class="w-full rounded-md border border-yellow-500/50 bg-gray-800 text-gray-100 shadow-sm"
                             :custom-label="serviceLabel"
                         />
                     </div>
 
                     <!-- Schedule -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-200 mb-1">Schedule</label>
-                        <input type="datetime-local" v-model="bookingForm.scheduled_datetime"
-                            class="w-full border border-yellow-500/50 rounded-md px-3 py-2 bg-gray-800 text-gray-100 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition" />
+                        <label class="mb-1 block text-sm font-medium text-gray-200">Schedule</label>
+                        <input
+                            type="datetime-local"
+                            v-model="bookingForm.scheduled_datetime"
+                            class="w-full rounded-md border border-yellow-500/50 bg-gray-800 px-3 py-2 text-gray-100 transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
+                        />
                     </div>
 
                     <!-- Notes -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-200 mb-1">Notes</label>
-                        <textarea v-model="bookingForm.notes"
-                            class="w-full border border-yellow-500/50 rounded-md px-3 py-2 bg-gray-800 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
-                            placeholder="Any instructions (optional)"></textarea>
+                        <label class="mb-1 block text-sm font-medium text-gray-200">Notes</label>
+                        <textarea
+                            v-model="bookingForm.notes"
+                            class="w-full rounded-md border border-yellow-500/50 bg-gray-800 px-3 py-2 text-gray-100 placeholder-gray-400 transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Any instructions (optional)"
+                        ></textarea>
                     </div>
 
                     <!-- Buttons -->
-                    <div class="flex justify-end gap-2 mt-4">
-                        <button type="button" @click="showBookingModal = false"
-                            class="px-4 py-2 bg-gray-700 text-gray-200 rounded hover:bg-gray-600 transition">
+                    <div class="mt-4 flex justify-end gap-2">
+                        <button
+                            type="button"
+                            @click="showBookingModal = false"
+                            class="rounded bg-gray-700 px-4 py-2 text-gray-200 transition hover:bg-gray-600"
+                        >
                             Cancel
                         </button>
-                        <button type="submit"
-                            class="px-4 py-2 bg-yellow-500 text-gray-900 font-semibold rounded hover:bg-yellow-400 transition">
+                        <button type="submit" class="rounded bg-yellow-500 px-4 py-2 font-semibold text-gray-900 transition hover:bg-yellow-400">
                             Book Now
                         </button>
                     </div>
 
                     <!-- Error Message -->
-                    <div v-if="errorMessage" class="mt-2 text-red-500 text-sm">{{ errorMessage }}</div>
+                    <div v-if="errorMessage" class="mt-2 text-sm text-red-500">{{ errorMessage }}</div>
                 </form>
             </div>
         </div>
-
     </div>
 </template>
 
 <script setup>
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
-import Multiselect from "vue-multiselect";
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import Multiselect from 'vue-multiselect';
 
 const page = usePage();
 const user = page.props.auth.user;
@@ -263,13 +283,15 @@ const handleClickOutside = (event) => {
 onMounted(() => document.addEventListener('click', handleClickOutside));
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
-const isActive = (path) => path === '/' ? page.url === '/' : page.url.startsWith(path);
-const linkClass = (path) => isActive(path)
-    ? 'nav-link relative text-yellow-600 font-semibold after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600'
-    : 'nav-link text-white hover:text-yellow-600';
-const mobileLinkClass = (path) => isActive(path)
-    ? 'relative text-yellow-600 font-semibold pl-4 py-3 border-l-4 border-blue-500 bg-blue-50'
-    : 'text-gray-700 hover:text-yellow-600 hover:bg-gray-50 py-3 pl-4';
+const isActive = (path) => (path === '/' ? page.url === '/' : page.url.startsWith(path));
+const linkClass = (path) =>
+    isActive(path)
+        ? 'nav-link relative text-yellow-600 font-semibold after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600'
+        : 'nav-link text-white hover:text-yellow-600';
+const mobileLinkClass = (path) =>
+    isActive(path)
+        ? 'relative text-yellow-600 font-semibold pl-4 py-3 border-l-4 border-blue-500 bg-blue-50'
+        : 'text-gray-700 hover:text-yellow-600 hover:bg-gray-50 py-3 pl-4';
 
 const services = ref([]);
 const selectedService = ref(null);
@@ -286,7 +308,9 @@ const fetchServices = async () => {
                 price: s.price,
             }));
         }
-    } catch (err) { console.error(err); }
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 onMounted(() => fetchServices());
@@ -332,17 +356,70 @@ const submitBooking = async () => {
 </script>
 
 <style>
-.nav-link { position: relative; display: inline-block; padding: 0.5rem 1rem; transition: color 0.3s ease, transform 0.2s ease; }
-.nav-link::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0%; height: 2px; background: #9f6800; transition: width 0.3s ease; }
-.nav-link:hover::after { width: 100%; }
-.nav-link:hover { transform: scale(1.05); }
+.nav-link {
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    transition:
+        color 0.3s ease,
+        transform 0.2s ease;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background: #9f6800;
+    transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+    width: 100%;
+}
+.nav-link:hover {
+    transform: scale(1.05);
+}
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
-.animate-fadeUp { animation: fadeUp 0.6s ease forwards; }
-.animate-fadeDown { animation: fadeDown 0.6s ease forwards; }
-.animate-zoomIn { animation: zoomIn 0.8s ease forwards; }
+.animate-fadeUp {
+    animation: fadeUp 0.6s ease forwards;
+}
+.animate-fadeDown {
+    animation: fadeDown 0.6s ease forwards;
+}
+.animate-zoomIn {
+    animation: zoomIn 0.8s ease forwards;
+}
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

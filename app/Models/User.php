@@ -26,7 +26,7 @@ class User extends Authenticatable
         'city',
         'zip',
         'country',
-        'profile_picture',
+        'profile_photo_url',
         'is_admin',
     ];
 
@@ -53,9 +53,9 @@ class User extends Authenticatable
         ];
     }
 
-     public function bookings()
+    public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'user_id', 'id');
     }
 
     public function getFullNameAttribute()
@@ -79,6 +79,9 @@ class User extends Authenticatable
 
     public function getProfilePhotoUrlAttribute()
     {
-        return $this->profile_picture ? asset('storage/' . $this->profile_picture) : asset('images/default-profile.png');
+        return $this->attributes['profile_photo_url']
+            ? asset('storage/' . $this->attributes['profile_photo_url'])
+            : asset('images/default-profile.png');
     }
+
 }

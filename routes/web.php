@@ -21,8 +21,26 @@ Route::middleware(['auth'])->group(function () {
         return Inertia::render('Contact');
     })->name('contact');
 
+    Route::get('/mybookings', function () {
+        return Inertia::render('user/MyBookings');
+    })->name('my_bookings');
+
+    Route::get('/user/myprofile', function () {
+        return Inertia::render('user/MyProfile');
+    })->name('my_profile');
+
     Route::post('/user/bookings/bookNow', [BookingController::class, 'bookNow'])->name('user.bookings.bookNow');
     Route::get('/user/services/selectList', [ServiceController::class, 'selectList'])->name('user.services.selectList');
+
+    Route::get('/user/mybookings/history', [UserController::class, 'myBookings'])->name('user.myBookings.history');
+    Route::post('/user/mybookings/cancel_booking', [UserController::class, 'cancelBooking'])->name('user.myBookings.cancelBooking');
+
+    Route::get('/user/my_profile', [UserController::class, 'myProfile'])->name('user.myProfile');
+    Route::post('/profile/updateProfile', [UserController::class, 'updateProfile'])->name('user.profile.updateProfile');
+
+    Route::post('/user/send-password-otp', [UserController::class, 'sendPasswordOtp']);
+    Route::post('/user/update-password', [UserController::class, 'updatePassword']);
+
 });
 Route::middleware(['auth', 'admin'])->group(function () {
 
