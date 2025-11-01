@@ -1,7 +1,43 @@
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import axios from 'axios';
 import { Mail, MapPin, Phone } from 'lucide-vue-next';
+import { ref } from 'vue';
+
+// Form state
+const form = ref({
+    name: '',
+    email: '',
+    message: '',
+});
+
+const successMessage = ref('');
+const errorMessage = ref('');
+const loading = ref(false);
+
+// Submit form
+const sendMessage = async (e: Event) => {
+    e.preventDefault();
+    loading.value = true;
+    successMessage.value = '';
+    errorMessage.value = '';
+
+    try {
+        const response = await axios.post('/contact-us/send', form.value);
+
+        if (response.data.result) {
+            successMessage.value = response.data.message;
+            form.value = { name: '', email: '', message: '' }; // reset form
+        } else {
+            errorMessage.value = response.data.message || 'Failed to send message.';
+        }
+    } catch (error: any) {
+        errorMessage.value = error.response?.data?.message || 'Server error.';
+    } finally {
+        loading.value = false;
+    }
+};
 </script>
 
 <template>
@@ -36,9 +72,10 @@ import { Mail, MapPin, Phone } from 'lucide-vue-next';
         <section class="bg-gray-700 px-6 py-16">
             <div class="mx-auto max-w-3xl">
                 <h2 class="mb-6 text-2xl font-bold text-white">Send us a Message</h2>
-                <form class="space-y-6">
+                <form class="space-y-6" @submit="sendMessage">
                     <div>
                         <input
+                            v-model="form.name"
                             type="text"
                             placeholder="Your Name"
                             class="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
@@ -46,6 +83,7 @@ import { Mail, MapPin, Phone } from 'lucide-vue-next';
                     </div>
                     <div>
                         <input
+                            v-model="form.email"
                             type="email"
                             placeholder="Your Email"
                             class="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
@@ -53,16 +91,23 @@ import { Mail, MapPin, Phone } from 'lucide-vue-next';
                     </div>
                     <div>
                         <textarea
+                            v-model="form.message"
                             rows="5"
                             placeholder="Your Message"
                             class="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-3 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
                         ></textarea>
                     </div>
+
+                    <!-- Success & Error messages -->
+                    <p v-if="successMessage" class="text-green-400">{{ successMessage }}</p>
+                    <p v-if="errorMessage" class="text-red-400">{{ errorMessage }}</p>
+
                     <button
                         type="submit"
-                        class="rounded-lg bg-yellow-500 px-6 py-3 font-semibold text-gray-900 shadow-lg transition-transform hover:scale-105 hover:bg-yellow-400"
+                        :disabled="loading"
+                        class="rounded-lg bg-yellow-500 px-6 py-3 font-semibold text-gray-900 shadow-lg transition-transform hover:scale-105 hover:bg-yellow-400 disabled:opacity-50"
                     >
-                        Send Message
+                        {{ loading ? 'Sending...' : 'Send Message' }}
                     </button>
                 </form>
             </div>

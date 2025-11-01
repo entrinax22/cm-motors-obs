@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -357,13 +358,27 @@ class UserController extends Controller
     public function sendPasswordOtp(Request $request)
     {
         $user = auth()->user();
-        $otp = rand(100000, 999999);
 
-        // Store OTP temporarily (for 5 minutes)
+        if (!$user) {
+            $request->validate([
+                'mobile_number' => 'required|string|regex:/^09\d{9}$/',
+            ]);
+
+            $user = User::where('phone', $request->mobile_number)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'result' => false,
+                    'message' => 'No account found with that mobile number.',
+                ]);
+            }
+        }
+
+        $otp = rand(100000, 999999);
         Session::put('password_otp', $otp);
         Session::put('password_otp_expires_at', now()->addMinutes(5));
+        Session::put('password_otp_user_id', $user->id);
 
-        // Send OTP using Semaphore
         $response = Http::post('https://api.semaphore.co/api/v4/messages', [
             'apikey' => env('SEMAPHORE_API_KEY'),
             'number' => $user->phone,
@@ -373,7 +388,7 @@ class UserController extends Controller
 
         return response()->json([
             'result' => true,
-            'message' => 'OTP sent successfully!',
+            'message' => 'OTP sent successfully! Please check your registered mobile number.',
             'api_response' => $response->json(),
         ]);
     }
@@ -387,24 +402,40 @@ class UserController extends Controller
 
         $storedOtp = Session::get('password_otp');
         $expiresAt = Session::get('password_otp_expires_at');
+        $userId = Session::get('password_otp_user_id');
 
-        if (!$storedOtp || now()->greaterThan($expiresAt)) {
-            return response()->json(['result' => false, 'message' => 'OTP expired. Please request a new one.']);
+        if (!$storedOtp || !$userId || now()->greaterThan($expiresAt)) {
+            return response()->json([
+                'result' => false,
+                'message' => 'OTP expired. Please request a new one.'
+            ]);
         }
 
         if ($request->otp != $storedOtp) {
-            return response()->json(['result' => false, 'message' => 'Invalid OTP.']);
+            return response()->json([
+                'result' => false,
+                'message' => 'Invalid OTP.'
+            ]);
         }
 
-        // Update password
-        $user = auth()->user();
+        $user = User::find($userId);
+        if (!$user) {
+            return response()->json([
+                'result' => false,
+                'message' => 'User not found.'
+            ]);
+        }
+        
         $user->password = Hash::make($request->password);
         $user->save();
 
-        // Clear OTP session
-        Session::forget(['password_otp', 'password_otp_expires_at']);
+        Session::forget(['password_otp', 'password_otp_expires_at', 'password_otp_user_id']);
 
-        return response()->json(['result' => true, 'message' => 'Password updated successfully.']);
+        return response()->json([
+            'result' => true,
+            'message' => 'Password updated successfully.'
+        ]);
     }
+
 
 }

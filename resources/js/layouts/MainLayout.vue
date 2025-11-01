@@ -148,30 +148,23 @@
                             <span class="text-xl font-bold">CM Motorparts</span>
                         </div>
                         <p class="mb-4 text-gray-300">
-                            Your trusted partner for all automotive needs. Quality service, expert technicians, and customer satisfaction guaranteed.
+                            Your trusted partner for all motorcycle care needs. Expert mechanics, quality service, and guaranteed customer
+                            satisfaction.
                         </p>
-                        <div class="flex space-x-4">
-                            <!-- Social Icons -->
-                            <a href="#" class="text-gray-300 hover:text-white">Twitter Icon</a>
-                            <a href="#" class="text-gray-300 hover:text-white">Facebook Icon</a>
-                            <a href="#" class="text-gray-300 hover:text-white">GitHub Icon</a>
-                        </div>
                     </div>
                     <div>
                         <h4 class="mb-4 text-lg font-semibold">Quick Links</h4>
                         <ul class="space-y-2">
-                            <li><Link href="/about" class="text-gray-300 hover:text-white">About Us</Link></li>
                             <li><Link href="/services" class="text-gray-300 hover:text-white">Services</Link></li>
-                            <li><Link href="/booking" class="text-gray-300 hover:text-white">Book Appointment</Link></li>
                             <li><Link href="/contact-us" class="text-gray-300 hover:text-white">Contact Us</Link></li>
                         </ul>
                     </div>
                     <div>
                         <h4 class="mb-4 text-lg font-semibold">Contact Info</h4>
                         <ul class="space-y-2 text-gray-300">
-                            <li class="flex items-center space-x-2">+63 123 456 7890</li>
+                            <li class="flex items-center space-x-2">+63 930 997 1898</li>
                             <li class="flex items-center space-x-2">info@cmmotorparts.com</li>
-                            <li class="flex items-start space-x-2">123 Main Street, Butuan City, Caraga, Philippines</li>
+                            <li class="flex items-start space-x-2">San Benito, Surigao del Norte, Philippines</li>
                         </ul>
                     </div>
                 </div>

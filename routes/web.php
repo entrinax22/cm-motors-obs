@@ -4,8 +4,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\DashboardController;
 
 Route::middleware(['auth'])->group(function () {
 
@@ -38,8 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/my_profile', [UserController::class, 'myProfile'])->name('user.myProfile');
     Route::post('/profile/updateProfile', [UserController::class, 'updateProfile'])->name('user.profile.updateProfile');
 
-    Route::post('/user/send-password-otp', [UserController::class, 'sendPasswordOtp']);
-    Route::post('/user/update-password', [UserController::class, 'updatePassword']);
+    Route::post('/contact-us/send', [ContactUsController::class, 'contactUs'])->name('user.contact_us.send');
 
 });
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -77,6 +77,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/bookings/delete/{booking_id}', [BookingController::class, 'destroy'])->name('admin.bookings.delete');
 
 });
+
+Route::post('/user/send-password-otp', [UserController::class, 'sendPasswordOtp']);
+Route::post('/user/update-password', [UserController::class, 'updatePassword']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
