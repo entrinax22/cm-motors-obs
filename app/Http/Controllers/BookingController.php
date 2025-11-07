@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Booking;
 use App\Models\Service;
@@ -129,6 +130,14 @@ class BookingController extends Controller
                     Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
                 }
 
+                $admin = User::where('is_admin', 1)->first();
+                if ($admin && $admin->phone) {
+                    $adminMessage = "New booking received: #{$booking->booking_number} for {$booking->service->service_name} by {$user->name} on {$date} at {$time}.";
+                    $response = $this->semaphore->sendSMS($admin->phone, $adminMessage);
+                }else {
+                    Log::warning("No admin user with phone number found to notify for booking #{$booking->booking_number}");
+                }
+
             } catch (Exception $smsException) {
                 Log::error("Failed to send SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
             }
@@ -223,6 +232,8 @@ class BookingController extends Controller
                     } else {
                         Log::warning("No phone number for user ID: {$user->id} (Booking #{$booking->booking_number}) on update.");
                     }
+
+                    $admin = User::where('is_admin', 1)->first();
 
                 } catch (Exception $smsException) {
                     Log::error("Failed to send update SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
@@ -321,6 +332,14 @@ class BookingController extends Controller
                     $response = $this->semaphore->sendSMS($phoneNumber, $message);
                 } else {
                     Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
+                }
+                
+                $admin = User::where('is_admin', 1)->first();
+                if ($admin && $admin->phone) {
+                    $adminMessage = "New booking received: #{$booking->booking_number} for {$booking->service->service_name} by {$user->name} on {$date} at {$time}.";
+                    $response = $this->semaphore->sendSMS($admin->phone, $adminMessage);
+                }else {
+                    Log::warning("No admin user with phone number found to notify for booking #{$booking->booking_number}");
                 }
 
             } catch (Exception $smsException) {
