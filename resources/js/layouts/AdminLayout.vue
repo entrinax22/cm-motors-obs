@@ -137,7 +137,7 @@
 
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
-import { CalendarCheck, LayoutDashboard, LogOut, Settings, Users, Wrench } from 'lucide-vue-next';
+import { CalendarCheck, LayoutDashboard, LogOut, Users, Wrench } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -161,10 +161,7 @@ const navItems = [
     },
     {
         group: 'Other',
-        items: [
-            { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-            { href: '/admin/settings', label: 'Settings', icon: Settings },
-        ],
+        items: [{ href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard }],
     },
 ];
 

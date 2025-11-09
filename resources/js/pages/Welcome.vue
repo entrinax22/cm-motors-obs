@@ -2,6 +2,10 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ShieldCheck, ThumbsUp, Wrench } from 'lucide-vue-next';
+import BookingModal from '../components/BookingModal.vue';
+
+import { ref } from 'vue';
+const showBookingModal = ref(false);
 </script>
 
 <template>
@@ -30,12 +34,12 @@ import { ShieldCheck, ThumbsUp, Wrench } from 'lucide-vue-next';
                 </p>
 
                 <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                    <Link
-                        href="/booking"
+                    <button
+                        @click="showBookingModal = true"
                         class="rounded-lg bg-yellow-500 px-8 py-3 text-lg font-semibold text-gray-900 shadow-lg transition-transform hover:scale-105 hover:bg-yellow-400"
                     >
                         Book a Service
-                    </Link>
+                    </button>
                 </div>
             </div>
         </section>
@@ -92,12 +96,12 @@ import { ShieldCheck, ThumbsUp, Wrench } from 'lucide-vue-next';
             <h2 class="mb-6 text-3xl font-bold">Need Maintenance or Spare Parts?</h2>
             <p class="mb-8 text-lg text-gray-300">Book a service now or explore our wide selection of motorcycle parts and accessories.</p>
             <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link
-                    href="/booking"
+                <button
+                    @click="showBookingModal = true"
                     class="rounded-lg bg-yellow-500 px-8 py-3 text-lg font-semibold text-gray-900 shadow-lg transition-transform hover:scale-105 hover:bg-yellow-400"
                 >
                     Book Now
-                </Link>
+                </button>
                 <Link
                     href="/services"
                     class="rounded-lg border border-yellow-400 px-8 py-3 text-lg font-semibold text-yellow-400 shadow-sm transition-transform hover:scale-105 hover:bg-yellow-400 hover:text-gray-900"
@@ -107,4 +111,7 @@ import { ShieldCheck, ThumbsUp, Wrench } from 'lucide-vue-next';
             </div>
         </section>
     </MainLayout>
+
+    <!-- Booking Modal Component -->
+    <BookingModal v-model="showBookingModal" />
 </template>
