@@ -60,8 +60,7 @@ const submitForm = async () => {
 };
 
 const cancel = () => {
-    console.log('Cancelled');
-    // Here you can use router.push('/admin/services') if using vue-router or Inertia.visit('/admin/services')
+    window.history.back();
 };
 </script>
 
