@@ -1,12 +1,12 @@
 <template>
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen bg-slate-50">
         <!-- Sidebar -->
         <div
-            class="fixed inset-y-0 left-0 z-50 w-64 transform bg-gray-900 transition-transform duration-500 ease-in-out"
+            class="fixed inset-y-0 left-0 z-50 w-64 transform bg-blue-900 transition-transform duration-500 ease-in-out"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
         >
             <!-- Logo -->
-            <div class="animate-fadeInDown flex h-16 items-center justify-center border-b border-gray-700 bg-gray-800">
+            <div class="animate-fadeInDown flex h-16 items-center justify-center border-b border-blue-700 bg-blue-950">
                 <Link href="/admin" class="flex items-center space-x-2">
                     <img src="/images/logo_cm_motors.png" alt="Logo" class="h-8 w-auto transition-transform duration-300 hover:scale-110" />
                     <span class="text-xl font-bold text-white">CM Admin</span>
@@ -24,11 +24,16 @@
                     leave-to-class="opacity-0 -translate-x-3"
                 >
                     <div v-for="group in navItems" :key="group.group">
-                        <h3 class="text-xs font-semibold tracking-wide text-gray-400 uppercase">{{ group.group }}</h3>
+                        <h3 class="text-xs font-semibold tracking-wide text-cyan-300 uppercase">{{ group.group }}</h3>
+
                         <div v-for="item in group.items" :key="item.href">
                             <Link
                                 :href="item.href"
-                                :class="isActive(item.href) ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'"
+                                :class="
+                                    isActive(item.href)
+                                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40'
+                                        : 'text-slate-300 hover:bg-blue-700 hover:text-white'
+                                "
                                 class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200"
                             >
                                 <component :is="item.icon" class="h-5 w-5 transition-transform group-hover:scale-110" />
@@ -40,11 +45,11 @@
             </nav>
 
             <!-- User Profile Section -->
-            <div class="animate-fadeInUp absolute inset-x-0 bottom-0 border-t border-gray-700 bg-gray-800 p-4">
+            <div class="animate-fadeInUp absolute inset-x-0 bottom-0 border-t border-blue-700 bg-blue-950 p-4">
                 <div class="flex items-center space-x-3">
                     <div class="flex-shrink-0">
                         <div
-                            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 ring-2 ring-gray-700 transition-transform duration-300 hover:scale-110"
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 ring-2 ring-blue-700 transition-transform duration-300 hover:scale-110"
                         >
                             <span class="text-sm font-semibold text-white">
                                 {{ $page.props.auth.user?.name?.charAt(0) || 'A' }}
@@ -55,14 +60,15 @@
                         <p class="truncate text-sm font-medium text-white">
                             {{ $page.props.auth.user?.name || 'Admin' }}
                         </p>
-                        <p class="truncate text-xs text-gray-400">Administrator</p>
+                        <p class="truncate text-xs text-cyan-300">Administrator</p>
                     </div>
                 </div>
+
                 <div class="mt-3">
                     <Link
                         href="/logout"
                         method="post"
-                        class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-300 transition-colors duration-300 hover:bg-gray-700 hover:text-white"
+                        class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors duration-300 hover:bg-blue-600/20 hover:text-cyan-300"
                     >
                         <LogOut class="h-5 w-5 transition-transform group-hover:rotate-90" />
                         <span>Logout</span>
@@ -74,14 +80,14 @@
         <!-- Main content wrapper -->
         <div class="lg:pl-64">
             <!-- Top navigation -->
-            <div class="animate-fadeInDown sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
+            <div class="animate-fadeInDown sticky top-0 z-40 border-b border-blue-700 bg-blue-950 shadow-sm">
                 <div class="flex h-16 items-center justify-between px-4 sm:px-6">
                     <div class="flex items-center">
                         <!-- Mobile menu button -->
                         <button
                             @click="sidebarOpen = !sidebarOpen"
                             type="button"
-                            class="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition-transform duration-300 hover:bg-gray-100 hover:text-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none lg:hidden"
+                            class="inline-flex items-center justify-center rounded-lg p-2 text-cyan-300 transition-transform duration-300 hover:bg-blue-800 hover:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none lg:hidden"
                             :class="sidebarOpen ? 'rotate-90' : ''"
                         >
                             <LayoutDashboard class="h-5 w-5" />
@@ -89,10 +95,10 @@
 
                         <!-- Page title -->
                         <div class="ml-3 lg:ml-0">
-                            <h1 class="text-2xl font-bold text-gray-900">
+                            <h1 class="text-2xl font-bold text-white">
                                 {{ pageTitle }}
                             </h1>
-                            <div class="mt-1 flex items-center space-x-2 text-sm text-gray-500">
+                            <div class="mt-1 flex items-center space-x-2 text-sm text-cyan-300">
                                 <span>Admin</span>
                                 <span>{{ pageTitle }}</span>
                             </div>
@@ -103,7 +109,7 @@
                         <!-- View site link -->
                         <Link
                             href="/"
-                            class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-50 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                            class="inline-flex items-center rounded-lg border border-blue-600/40 bg-blue-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:bg-blue-800 hover:text-cyan-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                         >
                             View Site
                         </Link>
@@ -112,7 +118,7 @@
             </div>
 
             <!-- Main content -->
-            <main class="min-h-screen bg-gray-50">
+            <main class="min-h-screen bg-blue-950/5">
                 <div class="animate-fadeIn h-full px-4 py-6 sm:px-6">
                     <slot />
                 </div>
@@ -129,7 +135,7 @@
             leave-to-class="opacity-0"
         >
             <div v-show="sidebarOpen" class="fixed inset-0 z-40 lg:hidden">
-                <div @click="sidebarOpen = false" class="bg-opacity-50 fixed inset-0 bg-gray-900 transition-opacity"></div>
+                <div @click="sidebarOpen = false" class="bg-opacity-50 fixed inset-0 bg-blue-900 transition-opacity"></div>
             </div>
         </transition>
     </div>
@@ -137,14 +143,11 @@
 
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
-import { CalendarCheck, LayoutDashboard, LogOut, Users, Wrench } from 'lucide-vue-next';
+import { CalendarCheck, LayoutDashboard, LogOut, Users, Wallet, Wrench } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const props = defineProps({
-    pageTitle: {
-        type: String,
-        default: 'Dashboard',
-    },
+    pageTitle: { type: String, default: 'Dashboard' },
 });
 
 const page = usePage();
@@ -157,6 +160,7 @@ const navItems = [
             { href: '/admin/bookings', label: 'Bookings', icon: CalendarCheck },
             { href: '/admin/users', label: 'Users', icon: Users },
             { href: '/admin/services', label: 'Services', icon: Wrench },
+            { href: '/admin/payments', label: 'Payments', icon: Wallet },
         ],
     },
     {
@@ -165,16 +169,10 @@ const navItems = [
     },
 ];
 
-const isActive = (path) => {
-    if (path === '/') {
-        return page.url === '/';
-    }
-    return page.url.startsWith(path);
-};
+const isActive = (path) => (path === '/' ? page.url === '/' : page.url.startsWith(path));
 </script>
 
 <style>
-/* Simple fade animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -205,6 +203,7 @@ const isActive = (path) => {
         transform: translateY(0);
     }
 }
+
 .animate-fadeIn {
     animation: fadeIn 0.5s ease-out;
 }

@@ -152,16 +152,14 @@ const deleteService = async (service_id: number) => {
 <template>
     <Head title="Services" />
     <AdminLayout :pageTitle="'Services'">
-        <div class="mx-auto max-w-5xl py-8">
+        <div class="w-full px-4 py-8">
             <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div class="flex w-full items-center gap-2 md:w-auto">
-                    <input
-                        v-model="search"
-                        type="text"
-                        placeholder="Search services..."
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none md:w-64"
-                    />
-                </div>
+                <input
+                    v-model="search"
+                    type="text"
+                    placeholder="Search services..."
+                    class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none md:w-64"
+                />
                 <button
                     @click="addService"
                     class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow transition-colors hover:bg-blue-700"

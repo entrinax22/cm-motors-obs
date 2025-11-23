@@ -1,10 +1,10 @@
 <template>
     <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="w-full max-w-lg rounded-xl border border-yellow-600/30 bg-gray-900 p-6 text-gray-100 shadow-2xl">
+        <div class="w-full max-w-lg rounded-xl border border-cyan-500/30 bg-blue-900 p-6 text-gray-100 shadow-2xl">
             <!-- Modal Header -->
-            <div class="mb-4 flex items-center justify-between border-b border-yellow-600/40 pb-2">
-                <h2 class="text-xl font-bold text-yellow-400">Book a Service</h2>
-                <button @click="close" class="text-gray-400 transition hover:text-yellow-400">
+            <div class="mb-4 flex items-center justify-between border-b border-cyan-500/40 pb-2">
+                <h2 class="text-xl font-bold text-cyan-400">Book a Service</h2>
+                <button @click="close" class="text-gray-400 transition hover:text-cyan-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -25,7 +25,7 @@
                         :searchable="true"
                         :close-on-select="true"
                         :allow-empty="true"
-                        class="w-full rounded-md border border-yellow-500/50 bg-gray-800 text-gray-100 shadow-sm"
+                        class="w-full rounded-md border border-cyan-500/50 bg-blue-800 text-gray-100 shadow-sm"
                         :custom-label="serviceLabel"
                     />
                 </div>
@@ -36,7 +36,7 @@
                     <input
                         type="datetime-local"
                         v-model="bookingForm.scheduled_datetime"
-                        class="w-full rounded-md border border-yellow-500/50 bg-gray-800 px-3 py-2 text-gray-100 transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
+                        class="w-full rounded-md border border-cyan-500/50 bg-blue-800 px-3 py-2 text-gray-100 transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400"
                     />
                 </div>
 
@@ -45,17 +45,20 @@
                     <label class="mb-1 block text-sm font-medium text-gray-200">Notes</label>
                     <textarea
                         v-model="bookingForm.notes"
-                        class="w-full rounded-md border border-yellow-500/50 bg-gray-800 px-3 py-2 text-gray-100 placeholder-gray-400 transition focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400"
+                        class="w-full rounded-md border border-cyan-500/50 bg-blue-800 px-3 py-2 text-gray-100 placeholder-gray-400 transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400"
                         placeholder="Any instructions (optional)"
                     ></textarea>
                 </div>
 
                 <!-- Buttons -->
                 <div class="mt-4 flex justify-end gap-2">
-                    <button type="button" @click="close" class="rounded bg-gray-700 px-4 py-2 text-gray-200 transition hover:bg-gray-600">
+                    <button type="button" @click="close" class="rounded bg-blue-700 px-4 py-2 text-gray-200 transition hover:bg-blue-600">
                         Cancel
                     </button>
-                    <button type="submit" class="rounded bg-yellow-500 px-4 py-2 font-semibold text-gray-900 transition hover:bg-yellow-400">
+                    <button
+                        type="submit"
+                        class="rounded bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 font-semibold text-white transition hover:from-blue-500 hover:to-cyan-400"
+                    >
                         Book Now
                     </button>
                 </div>
@@ -133,7 +136,7 @@ const submitBooking = async () => {
 
             visible.value = false;
 
-            window.alert('Success');
+            window.alert('Booking Successful!');
         } else {
             errorMessage.value = response.data.message || 'Booking failed. Please try again.';
         }

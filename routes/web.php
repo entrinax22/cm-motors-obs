@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\DashboardController;
 
@@ -41,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/contact-us/send', [ContactUsController::class, 'contactUs'])->name('user.contact_us.send');
 
+    Route::post('/user/payments/store', [PaymentsController::class, 'store'])->name('user.payments.store');
+
+
 });
 Route::middleware(['auth', 'admin'])->group(function () {
 
@@ -76,6 +80,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/bookings/update', [BookingController::class, 'update'])->name('admin.bookings.update');
     Route::delete('/admin/bookings/delete/{booking_id}', [BookingController::class, 'destroy'])->name('admin.bookings.delete');
 
+    Route::get('/admin/payments', [PaymentsController::class, 'index'])->name('admin.payments.index');
+    Route::get('/admin/payments/create', [PaymentsController::class, 'create'])->name('admin.payments.create');
+    Route::get('/admin/payments/list', [PaymentsController::class, 'list'])->name('admin.payments.list');
+    Route::get('/admin/payments/edit/{payment_id}', [PaymentsController::class, 'edit'])->name('admin.payments.edit');
+    Route::post('/admin/payments/update', [PaymentsController::class, 'update'])->name('admin.payments.update');
+    Route::delete('/admin/payments/delete', [PaymentsController::class, 'destroy'])->name('admin.payments.delete');
 });
 
 Route::post('/user/send-password-otp', [UserController::class, 'sendPasswordOtp']);

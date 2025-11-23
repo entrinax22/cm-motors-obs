@@ -84,4 +84,9 @@ class User extends Authenticatable
             : asset('images/default-profile.png');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'user_id', 'id');
+    }
+
 }

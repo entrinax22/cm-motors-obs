@@ -1,11 +1,11 @@
 <template>
-    <div class="flex min-h-screen flex-col bg-gray-50">
+    <div class="flex min-h-screen flex-col bg-slate-50">
         <!-- Navigation -->
         <nav
-            class="animate-fadeDown sticky top-0 z-50 border-b border-gray-200 bg-cover bg-center shadow-md"
+            class="animate-fadeDown sticky top-0 z-50 border-b border-blue-700 bg-cover bg-center shadow-md"
             style="background-image: url('/images/tire_repair.jpg')"
         >
-            <div class="bg-black/50">
+            <div class="bg-gradient-to-r from-blue-900/80 via-blue-800/80 to-cyan-900/80 backdrop-blur-sm">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 items-center justify-between">
                         <!-- Logo -->
@@ -13,7 +13,7 @@
                             <Link href="/" class="flex items-center space-x-3">
                                 <img src="/images/logo_cm_motors.png" alt="Logo" class="h-8 w-auto" />
                                 <span
-                                    class="bg-gradient-to-r from-white via-gray-200 to-gray-300 bg-clip-text text-xl font-bold text-transparent drop-shadow"
+                                    class="bg-gradient-to-r from-white via-blue-200 to-cyan-300 bg-clip-text text-xl font-bold text-transparent drop-shadow"
                                 >
                                     CM Motorparts
                                 </span>
@@ -30,13 +30,13 @@
                             <div class="relative" ref="dropdownRef">
                                 <button
                                     @click="toggleDropdown"
-                                    class="flex items-center rounded-lg border border-yellow-600/40 bg-gray-800/50 px-4 py-2 text-sm font-medium text-white transition-all hover:scale-105 hover:border-yellow-500 hover:bg-yellow-600/20 hover:text-yellow-400"
+                                    class="flex items-center rounded-lg border border-blue-500/40 bg-blue-900/40 px-4 py-2 text-sm font-medium text-white transition-all hover:scale-105 hover:border-cyan-400 hover:bg-blue-600/30 hover:text-cyan-300"
                                 >
                                     <img
                                         v-if="user.profile_photo_url"
                                         :src="user.profile_photo_url"
                                         alt="Profile"
-                                        class="mr-2 h-6 w-6 rounded-full border border-yellow-500/40"
+                                        class="mr-2 h-6 w-6 rounded-full border border-cyan-400/40"
                                     />
                                     {{ user.name || 'Account' }}
                                     <svg
@@ -53,30 +53,30 @@
                                 <transition name="fade">
                                     <div
                                         v-show="accountOpen"
-                                        class="animate-fadeUp absolute right-0 z-50 mt-2 w-48 rounded-md border border-yellow-600/30 bg-gray-900/95 shadow-lg backdrop-blur-md"
+                                        class="animate-fadeUp absolute right-0 z-50 mt-2 w-48 rounded-md border border-blue-500/40 bg-blue-950/95 shadow-lg backdrop-blur-md"
                                     >
                                         <Link
                                             v-if="$page.props.auth.user?.is_admin === 1"
                                             href="/admin/dashboard"
-                                            class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                            class="block px-4 py-2 text-sm text-slate-200 transition-colors hover:bg-blue-600/20 hover:text-cyan-300"
                                         >
                                             Dashboard
                                         </Link>
                                         <Link
                                             href="/user/myprofile"
-                                            class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                            class="block px-4 py-2 text-sm text-slate-200 transition-colors hover:bg-blue-600/20 hover:text-cyan-300"
                                         >
                                             My Profile
                                         </Link>
                                         <Link
                                             href="/mybookings"
-                                            class="block px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                            class="block px-4 py-2 text-sm text-slate-200 transition-colors hover:bg-blue-600/20 hover:text-cyan-300"
                                         >
                                             My Bookings
                                         </Link>
                                         <button
                                             @click="logout"
-                                            class="w-full px-4 py-2 text-left text-sm text-gray-200 transition-colors hover:bg-yellow-600/20 hover:text-yellow-400"
+                                            class="w-full px-4 py-2 text-left text-sm text-slate-200 transition-colors hover:bg-blue-600/20 hover:text-cyan-300"
                                         >
                                             Logout
                                         </button>
@@ -87,7 +87,7 @@
                             <!-- Book Now Button -->
                             <button
                                 @click="showBookingModal = true"
-                                class="rounded-lg border border-yellow-600 bg-yellow-500 px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-200 hover:scale-105 hover:bg-yellow-400"
+                                class="rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition-all hover:scale-105 hover:from-blue-500 hover:to-cyan-400"
                             >
                                 Book Now
                             </button>
@@ -97,7 +97,7 @@
                         <div class="md:hidden">
                             <button
                                 @click="mobileMenuOpen = !mobileMenuOpen"
-                                class="transform rounded-lg p-2 text-white transition hover:scale-110 hover:bg-black/30"
+                                class="transform rounded-lg p-2 text-white transition hover:scale-110 hover:bg-blue-800/50"
                             >
                                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -115,14 +115,15 @@
 
                     <!-- Mobile menu -->
                     <transition name="slide-fade">
-                        <div v-show="mobileMenuOpen" class="animate-fadeDown border-t border-gray-200 bg-white/90 py-4 backdrop-blur-md md:hidden">
+                        <div v-show="mobileMenuOpen" class="animate-fadeDown border-t border-blue-200 bg-white/90 py-4 backdrop-blur-md md:hidden">
                             <div class="flex flex-col space-y-2">
                                 <Link href="/" :class="mobileLinkClass('/')">Home</Link>
                                 <Link href="/services" :class="mobileLinkClass('/services')">Services</Link>
                                 <Link href="/contact-us" :class="mobileLinkClass('/contact-us')">Contact</Link>
+
                                 <button
                                     @click="showBookingModal = true"
-                                    class="rounded bg-yellow-500 py-3 pr-3 pl-4 text-sm font-semibold text-gray-800 hover:bg-yellow-400"
+                                    class="rounded bg-gradient-to-r from-blue-600 to-cyan-500 py-3 pr-3 pl-4 text-sm font-semibold text-white hover:from-blue-500 hover:to-cyan-400"
                                 >
                                     Book Now
                                 </button>
@@ -139,36 +140,36 @@
         </main>
 
         <!-- Footer -->
-        <footer class="mt-16 bg-gray-800 text-white">
+        <footer class="mt-16 bg-gradient-to-r from-blue-950 to-blue-900 text-slate-300">
             <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
                     <div class="col-span-2">
                         <div class="mb-4 flex items-center space-x-2">
                             <img src="/images/logo_cm_motors.png" alt="Logo" class="h-8 w-auto" />
-                            <span class="text-xl font-bold">CM Motorparts</span>
+                            <span class="text-xl font-bold text-white">CM Motorparts</span>
                         </div>
-                        <p class="mb-4 text-gray-300">
+                        <p class="mb-4 text-slate-300">
                             Your trusted partner for all motorcycle care needs. Expert mechanics, quality service, and guaranteed customer
                             satisfaction.
                         </p>
                     </div>
                     <div>
-                        <h4 class="mb-4 text-lg font-semibold">Quick Links</h4>
+                        <h4 class="mb-4 text-lg font-semibold text-white">Quick Links</h4>
                         <ul class="space-y-2">
-                            <li><Link href="/services" class="text-gray-300 hover:text-white">Services</Link></li>
-                            <li><Link href="/contact-us" class="text-gray-300 hover:text-white">Contact Us</Link></li>
+                            <li><Link href="/services" class="text-slate-300 hover:text-cyan-300">Services</Link></li>
+                            <li><Link href="/contact-us" class="text-slate-300 hover:text-cyan-300">Contact Us</Link></li>
                         </ul>
                     </div>
                     <div>
-                        <h4 class="mb-4 text-lg font-semibold">Contact Info</h4>
-                        <ul class="space-y-2 text-gray-300">
+                        <h4 class="mb-4 text-lg font-semibold text-white">Contact Info</h4>
+                        <ul class="space-y-2 text-slate-300">
                             <li class="flex items-center space-x-2">+63 930 997 1898</li>
                             <li class="flex items-center space-x-2">info@cmmotorparts.com</li>
                             <li class="flex items-start space-x-2">San Benito, Surigao del Norte, Philippines</li>
                         </ul>
                     </div>
                 </div>
-                <div class="mt-8 border-t border-gray-700 pt-8 text-center text-gray-300">
+                <div class="mt-8 border-t border-blue-700 pt-8 text-center text-slate-400">
                     <p>&copy; 2025 CM Motorparts. All rights reserved.</p>
                 </div>
             </div>
@@ -207,18 +208,16 @@ onMounted(() => document.addEventListener('click', handleClickOutside));
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
 const isActive = (path) => (path === '/' ? page.url === '/' : page.url.startsWith(path));
+
 const linkClass = (path) =>
     isActive(path)
-        ? 'nav-link relative text-yellow-600 font-semibold after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-blue-600'
-        : 'nav-link text-white hover:text-yellow-600';
+        ? 'nav-link relative text-cyan-300 font-semibold after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-blue-400 after:to-cyan-400'
+        : 'nav-link text-white hover:text-cyan-300';
+
 const mobileLinkClass = (path) =>
     isActive(path)
-        ? 'relative text-yellow-600 font-semibold pl-4 py-3 border-l-4 border-blue-500 bg-blue-50'
-        : 'text-gray-700 hover:text-yellow-600 hover:bg-gray-50 py-3 pl-4';
-
-// booking modal behavior moved into BookingModal.vue
-
-// booking modal behavior moved into BookingModal.vue
+        ? 'relative text-blue-600 font-semibold pl-4 py-3 border-l-4 border-blue-500 bg-blue-50'
+        : 'text-slate-700 hover:text-cyan-500 hover:bg-slate-100 py-3 pl-4';
 </script>
 
 <style>
@@ -237,7 +236,7 @@ const mobileLinkClass = (path) =>
     bottom: 0;
     width: 0%;
     height: 2px;
-    background: #9f6800;
+    background: #2563eb; /* blue-600 */
     transition: width 0.3s ease;
 }
 .nav-link:hover::after {
@@ -288,4 +287,5 @@ const mobileLinkClass = (path) =>
     animation: zoomIn 0.8s ease forwards;
 }
 </style>
+
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
