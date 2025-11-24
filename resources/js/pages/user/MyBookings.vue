@@ -179,6 +179,7 @@ const submitPayment = async () => {
             paymentSuccessMessage.value = 'Payment successfully added!';
             showPaymentModal.value = false;
             fetchUserBookings();
+            alert('Payment successfully added!');
         } else {
             paymentErrorMessage.value = res.data.message || 'Failed to save payment.';
         }
@@ -189,6 +190,8 @@ const submitPayment = async () => {
         loadingPayment.value = false;
     }
 };
+
+const viewQRCode = ref(false);
 </script>
 
 <template>
@@ -336,6 +339,17 @@ const submitPayment = async () => {
                     </button>
                 </div>
 
+                <!--GCash QR Code View-->
+                <div class="mt-4 flex flex-col items-center">
+                    <h3 class="mt-4 text-lg font-semibold text-white">GCash QR Code</h3>
+                    <img
+                        src="/qr_code/GCashQR.png"
+                        alt="GCash QR Code"
+                        class="mt-2 h-48 w-48 cursor-pointer rounded border object-cover transition hover:scale-105"
+                        @click="viewQRCode = true"
+                    />
+                </div>
+
                 <!-- Form -->
                 <form @submit.prevent="submitPayment" class="mt-4 space-y-4 text-cyan-200">
                     <!-- Amount -->
@@ -389,6 +403,16 @@ const submitPayment = async () => {
                     <p v-if="paymentSuccessMessage" class="text-green-400">{{ paymentSuccessMessage }}</p>
                     <p v-if="paymentErrorMessage" class="text-red-400">{{ paymentErrorMessage }}</p>
                 </form>
+            </div>
+        </div>
+
+        <div v-if="viewQRCode" class="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+            <div class="relative">
+                <img src="/qr_code/GCashQR.png" class="h-[500px] w-[500px] rounded-lg border-4 border-cyan-400 object-cover shadow-2xl" />
+
+                <button @click="viewQRCode = false" class="absolute -top-6 right-0 rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
+                    Close
+                </button>
             </div>
         </div>
     </MainLayout>
