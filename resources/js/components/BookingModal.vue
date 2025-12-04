@@ -128,7 +128,6 @@ const submitBooking = async () => {
         const response = await axios.post('/user/bookings/bookNow', payload);
 
         if (response.data.result === true) {
-            // Reset form
             selectedService.value = null;
             bookingForm.scheduled_datetime = '';
             bookingForm.notes = '';
@@ -141,8 +140,13 @@ const submitBooking = async () => {
             errorMessage.value = response.data.message || 'Booking failed. Please try again.';
         }
     } catch (error) {
-        console.error(error);
-        errorMessage.value = 'An error occurred while submitting your booking.';
+        if (error.response?.status === 422) {
+            // Laravel validation errors
+            const errors = error.response.data.errors;
+            errorMessage.value = Object.values(errors)[0][0];
+        } else {
+            errorMessage.value = 'An error occurred while submitting your booking.';
+        }
     }
 };
 

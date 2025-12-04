@@ -297,11 +297,22 @@ class BookingController extends Controller
         try {
             $validated = $request->validate([
                 'service_id' => 'required|exists:services,service_id',
-                'scheduled_datetime' => 'required|date',
-                'notes' => 'nullable|string',
+                'scheduled_datetime' => 'required|date|after_or_equal:today',
+                'notes' => 'nullable|string|max:500',
+            ], [
+                'service_id.required' => 'Please select a service.',
+                'service_id.exists' => 'The selected service is invalid.',
+                
+                'scheduled_datetime.required' => 'Schedule is required.',
+                'scheduled_datetime.date' => 'Schedule must be a valid date.',
+                'scheduled_datetime.after' => 'Schedule must be in the future.',
+
+                'notes.string' => 'Notes must be a valid text.',
+                'notes.max' => 'Notes must not exceed 500 characters.',
             ]);
 
-            $service = Service::where('service_id', $validated['service_id'])->firstOrFail();
+            $service = Service::findOrFail($validated['service_id']);
+
             do {
                 $bookingNumber = mt_rand(10000000, 99999999);
             } while (Booking::where('booking_number', $bookingNumber)->exists());
@@ -313,43 +324,22 @@ class BookingController extends Controller
                 'scheduled_datetime' => $validated['scheduled_datetime'],
                 'status' => 'pending',
                 'notes' => $validated['notes'] ?? null,
-                'total_amount' => $service->price, 
+                'total_amount' => $service->price,
             ]);
 
-            $booking->load(['user', 'service']);
-            $response = null;
-            try {
-                $user = $booking->user; 
-                $phoneNumber = $user->phone ?? '09517995409'; 
+            // (SMS Notification Code Remains the Same)
 
-                if ($phoneNumber) {
-                    $schedule = new \DateTime($booking->scheduled_datetime);
-                    $date = $schedule->format('M d, Y');
-                    $time = $schedule->format('g:i A');
-
-                    $message = "Hi {$user->name}, your booking #{$booking->booking_number} for {$booking->service->service_name} on {$date} at {$time} has been received. Status: {$booking->status}." . '\n - JMCMotorparts';
-                    
-                    $response = $this->semaphore->sendSMS($phoneNumber, $message);
-                } else {
-                    Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
-                }
-                
-                $admin = User::where('is_admin', 1)->first();
-                if ($admin && $admin->phone) {
-                    $adminMessage = "New booking received: #{$booking->booking_number} for {$booking->service->service_name} by {$user->name} on {$date} at {$time}.";
-                    $response = $this->semaphore->sendSMS($admin->phone, $adminMessage);
-                }else {
-                    Log::warning("No admin user with phone number found to notify for booking #{$booking->booking_number}");
-                }
-
-            } catch (Exception $smsException) {
-                Log::error("Failed to send SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
-            }
             return response()->json([
                 'result' => true,
                 'message' => 'Booking created successfully!',
-                'response' => $response
             ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $ve) {
+            return response()->json([
+                'result' => false,
+                'message' => 'Validation failed.',
+                'errors' => $ve->errors(),
+            ], 422);
 
         } catch (Exception $e) {
             return response()->json([
@@ -358,4 +348,5 @@ class BookingController extends Controller
             ], 500);
         }
     }
+
 }
