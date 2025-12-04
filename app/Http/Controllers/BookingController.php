@@ -104,7 +104,7 @@ class BookingController extends Controller
                 'booking_number' => 'required|numeric|unique:bookings,booking_number',
                 'user_id' => 'required|exists:users,id',
                 'service_id' => 'required|exists:services,service_id',
-                'scheduled_datetime' => 'required|date',
+                'scheduled_datetime' => 'required|date|after_or_equal:today',
                 'status' => 'required|string|in:pending,confirmed,completed,cancelled',
                 'notes' => 'nullable|string',
                 'total_amount' => 'required|numeric|min:0',
@@ -328,7 +328,36 @@ class BookingController extends Controller
             ]);
 
             // (SMS Notification Code Remains the Same)
+            $booking->load(['user', 'service']);
+            $response = null;
+            try {
+                $user = $booking->user; 
+                $phoneNumber = $user->phone ?? '09517995409'; 
 
+                if ($phoneNumber) {
+                    $schedule = new \DateTime($booking->scheduled_datetime);
+                    $date = $schedule->format('M d, Y');
+                    $time = $schedule->format('g:i A');
+
+                    $message = "Hi {$user->name}, your booking #{$booking->booking_number} for {$booking->service->service_name} on {$date} at {$time} has been received. Status: {$booking->status}." . '\n - JMCMotorparts';
+                    
+                    $response = $this->semaphore->sendSMS($phoneNumber, $message);
+                } else {
+                    Log::warning("No phone number found for user ID: {$user->id} (Booking #{$booking->booking_number})");
+                }
+
+                $admin = User::where('is_admin', 1)->first();
+                if ($admin && $admin->phone) {
+                    $adminMessage = "New booking received: #{$booking->booking_number} for {$booking->service->service_name} by {$user->name} on {$date} at {$time}.";
+                    $response = $this->semaphore->sendSMS($admin->phone, $adminMessage);
+                }else {
+                    Log::warning("No admin user with phone number found to notify for booking #{$booking->booking_number}");
+                }
+
+            } catch (Exception $smsException) {
+                Log::error("Failed to send SMS for booking #{$booking->booking_number}: " . $smsException->getMessage());
+            }
+            
             return response()->json([
                 'result' => true,
                 'message' => 'Booking created successfully!',
